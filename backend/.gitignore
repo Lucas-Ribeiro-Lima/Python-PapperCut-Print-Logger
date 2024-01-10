@@ -1,2 +1,5 @@
 #Ignore database
 data/*
+
+#env file
+.env
