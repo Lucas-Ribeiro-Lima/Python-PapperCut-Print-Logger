@@ -1,9 +1,9 @@
 import os
 import pandas as pd
 
-def toDataframe(path):
+def to_dataframe(ano, mes):
   #Variaveis
-  folder_path=path
+  folder_path=f'backend/data/{ano}/{mes}/'
   file_list = os.listdir(folder_path)
 
   tables = []
@@ -13,8 +13,8 @@ def toDataframe(path):
     table = pd.read_csv(file_path, encoding="ISO-8859-1", skiprows=2, 
                         delimiter=",",
                         names=["DateTime",  "User", "Pages", "Copies", "Printer", "Document Name", "Client",
-                                "Paper Size", "Language", "Height", "Width", "Duplex", "Grayscale", "Size", "Null"],
-                      )
+                                "Paper Size", "Language", "Height", "Width", "Duplex", "Grayscale", "Size", "Null"])
+    
     table["Document Name"] = table["Document Name"].fillna("Não especificado")
 
     # Split the 'DateTime' column into 'Date' and 'Time' without removing any values

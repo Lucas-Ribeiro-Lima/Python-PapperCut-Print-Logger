@@ -1,6 +1,6 @@
 import plotly.express as px
 
-def showGraphsPlotly(data_frame):
+def show_graphs_plotly(data_frame):
   # Group by 'Date', calculate the sum of 'Total'
   total_pages_by_date = data_frame.groupby('Date')['Total'].sum().reset_index()
 

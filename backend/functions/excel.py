@@ -1,7 +1,14 @@
-def downloadExcel(path, data_frame):
+from io import BytesIO
+from flask import send_file
+from functions import extractCSV
 
-  excel_path = path
-  data_frame.to_excel(excel_path, index=False)
+def download_excel(ano, mes):
+  #Variavel
+  excel_file = BytesIO()
+  data_frame = extractCSV.to_dataframe(ano, mes)
 
-  # Display the resulting DataFrame
-  return f"DataFrame saved to {excel_path}"
+  data_frame.to_excel(excel_file, index=False)
+
+  excel_file.seek(0)
+
+  return send_file(excel_file, download_name="relatorio_impressao.xlsx", as_attachment=True)
