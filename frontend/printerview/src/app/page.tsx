@@ -1,6 +1,3 @@
-
 export default function Home() {
-  return (
-    <main>Printer View</main>
-  )
+  return <main>Printer View</main>
 }
