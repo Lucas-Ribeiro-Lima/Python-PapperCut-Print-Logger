@@ -199,7 +199,7 @@ export default function ReportTable() {
     return (
       <div className="flex flex-col gap-4">
         <div className="flex justify-between gap-3 items-end">
-          <div className="flex flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Input
               isClearable
               className="w-full sm:max-w-[44%]"
@@ -257,13 +257,14 @@ export default function ReportTable() {
             <Button
               color="primary"
               onPress={downloadExcel}
+              className="hidden sm:flex"
               endContent={<DownloadIcon></DownloadIcon>}
             >
               Download
             </Button>
           </div>
         </div>
-        <div className="flex justify-between items-center">
+        <div className="hidden sm:flex  justify-between items-center">
           <div className="flex-1"></div>
           <label className="flex items-center text-default-400 text-small">
             Linhas por página:
