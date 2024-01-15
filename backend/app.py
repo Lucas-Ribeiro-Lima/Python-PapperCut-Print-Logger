@@ -30,16 +30,13 @@ def get_dataframe():
       ano = request.args.get('ano')
       mes = request.args.get('mes')
       #Dataframe
-      data_frame = extractCSV.to_dataframe(ano, mes)
-      data_frame = data_frame.to_json()
-      response = json.loads(data_frame)
-
-      return jsonify(response)
+      response = extractCSV.to_dataframe(ano, mes)
+      return response
     else:
       return "Não autorizado", 401
   
   except Exception as e:
-    return f"Error fetching data: {str(e)}", 500
+    return f"Error: {str(e)}", 500
 
 
 @app.route("/getDataframe/download")
