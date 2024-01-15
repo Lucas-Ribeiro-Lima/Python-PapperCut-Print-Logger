@@ -28,7 +28,7 @@ import {
 } from 'lucide-react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { ReportColumns } from './columns'
-import { capitalize, convertData, convertMonth } from './utils'
+import { capitalize, convertData, convertMonth, downloadExcel } from './utils'
 import { INITIAL_VISIBLE_COLUMNS, PREVIOUSMONTH } from './filters'
 
 export type ReportData = {
@@ -256,7 +256,7 @@ export default function ReportTable() {
             </Dropdown>
             <Button
               color="primary"
-              // onPress={}
+              onPress={downloadExcel}
               endContent={<DownloadIcon></DownloadIcon>}
             >
               Download
@@ -296,10 +296,10 @@ export default function ReportTable() {
           onChange={setPage}
         />
         <div className="bg-zinc-900 pl-2 pr-2 rounded-3xl text-white/80 text-2xl font-semibold">
-          <span className="bg-gradient-to-r font-semibold from-sky-500 via-sky-700 to-sky-400 bg-clip-text text-transparent ">
-            Total de Impressões:
-          </span>{' '}
-          {TotalImpressoes}
+          <span className="bg-gradient-to-r font-semibold from-sky-500 via-sky-700 to-sky-400 bg-clip-text text-transparent text-lg ">
+            {'Total de Impressões: '}
+          </span>
+          <span className="text-lg">{TotalImpressoes}</span>
         </div>
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
           <Button
@@ -326,7 +326,6 @@ export default function ReportTable() {
   return (
     <Table
       aria-label="Print report table"
-      // removeWrapper
       topContent={topContent}
       topContentPlacement="outside"
       classNames={{
