@@ -8,7 +8,7 @@ def download_excel(ano, mes):
   excel_file = BytesIO()
   json_data = extractCSV.to_dataframe(ano, mes)
 
-  data_frame = pd.DataFrame(json_data)
+  data_frame = pd.read_json(json_data)
 
   data_frame.to_excel(excel_file, index=False)
 
