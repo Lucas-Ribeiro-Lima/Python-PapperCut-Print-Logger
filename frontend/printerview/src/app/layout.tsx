@@ -1,11 +1,14 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { ReactNode } from 'react'
+
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'PrinterView',
-  description: 'Web Next App to visualizate Papper printer logger data',
+  description: 'App to visualizate Papper printer logger data',
 }
 
 export const viewport = {
@@ -14,14 +17,12 @@ export const viewport = {
   maximumScale: 1,
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className="dark bg-gradient-to-r from-gray-900 via-sky-950 to-slate-900">
+        {children}
+      </body>
     </html>
   )
 }
