@@ -7,6 +7,5 @@ export function ApiClient() {
       Authorization: process.env.API_CLIENT,
     },
   })
-
   return api
 }
