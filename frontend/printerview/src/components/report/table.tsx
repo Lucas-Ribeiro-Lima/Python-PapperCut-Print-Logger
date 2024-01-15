@@ -50,6 +50,7 @@ export default function ReportTable() {
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
     new Set(INITIAL_VISIBLE_COLUMNS),
   )
+
   // Estado para ordenação da lista
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: 'Date',
@@ -107,7 +108,7 @@ export default function ReportTable() {
   }, [reportData, filterValue, printerValue])
 
   // Paginação
-  const [rowsPerPage, setRowsPerPage] = useState(15)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
   const [page, setPage] = useState(1)
   const pages = Math.ceil((filteredItems || []).length / rowsPerPage)
 
@@ -269,7 +270,7 @@ export default function ReportTable() {
             <select
               className="bg-transparent outline-none text-default-400 text-small"
               onChange={onRowsPerPageChange}
-              defaultValue={15}
+              defaultValue={5}
             >
               <option value="5">5</option>
               <option value="10">10</option>
