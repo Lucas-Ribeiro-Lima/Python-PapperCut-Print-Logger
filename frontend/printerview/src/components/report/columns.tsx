@@ -28,9 +28,9 @@ export const ReportColumns = [
     sortable: true,
   },
   {
-    key: 'Document Name',
+    key: 'Document_Name',
     uid: 'Document Name',
-    label: 'Nome',
+    label: 'Nome arquivo',
     sortable: true,
   },
   {

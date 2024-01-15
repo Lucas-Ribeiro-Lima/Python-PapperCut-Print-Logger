@@ -29,13 +29,20 @@ export type ReportData = {
   Client: string
   Copies: number
   Date: string
-  DocumentName: string
+  Document_Name: string
   Pages: number
   Total: number
   User: string
 }
 const PREVIOUSMONTH = new Date().toISOString().split('T')[0] // Obtém a data atual no formato 'YYYY-MM-DD'
-const INITIAL_VISIBLE_COLUMNS = ['Client', 'Date', 'User', 'Printer', 'Total']
+const INITIAL_VISIBLE_COLUMNS = [
+  'Client',
+  'Date',
+  'User',
+  'Printer',
+  'Document Name',
+  'Total',
+]
 
 export default function ReportTable() {
   const [ano, setAno] = useState<number>()
@@ -74,27 +81,42 @@ export default function ReportTable() {
     }
   })
 
+  // Filtro de usuário
+  const [filterValue, setFilterValue] = React.useState('')
+  const hasSearchFilter = Boolean(filterValue)
+
+  const filteredItems = useMemo(() => {
+    let filteredData = [...(data ?? [])]
+
+    if (hasSearchFilter) {
+      filteredData = filteredData.filter((object) =>
+        object.User.toLowerCase().includes(filterValue.toLowerCase()),
+      )
+    }
+    return filteredData
+  }, [data, filterValue])
+
   // Total de impressões
   const TotalImpressoes = useMemo(() => {
     let total = 0
-    data?.forEach((object) => {
+    filteredItems?.forEach((object) => {
       total += object.Total
     })
     return total
-  }, [data])
+  }, [data, filterValue])
 
   // Paginação
   const [rowsPerPage, setRowsPerPage] = useState(15)
   const [page, setPage] = useState(1)
+  const pages = Math.ceil((filteredItems || []).length / rowsPerPage)
 
-  const pages = Math.ceil((data || []).length / rowsPerPage)
-
+  // Processamento dos itens exibidos
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage
     const end = start + rowsPerPage
 
-    return data?.slice(start, end)
-  }, [page, data, rowsPerPage])
+    return filteredItems.slice(start, end)
+  }, [page, filteredItems, rowsPerPage])
 
   // Processamento de ordenação das colunas
   const sortedItems = useMemo(() => {
@@ -134,6 +156,20 @@ export default function ReportTable() {
     [],
   )
 
+  const onSearchChange = useCallback((value?: string) => {
+    if (value) {
+      setFilterValue(value)
+      setPage(1)
+    } else {
+      setFilterValue('')
+    }
+  }, [])
+
+  const onClear = useCallback(() => {
+    setFilterValue('')
+    setPage(1)
+  }, [])
+
   const onDateChange = useCallback((str: string) => {
     const data = new Date(str)
 
@@ -156,6 +192,9 @@ export default function ReportTable() {
               isClearable
               className="w-full sm:max-w-[44%]"
               placeholder="Usuário..."
+              value={filterValue}
+              onValueChange={onSearchChange}
+              onClear={onClear}
               startContent={<SearchIcon />}
             />
             <Input
@@ -178,7 +217,7 @@ export default function ReportTable() {
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
-                aria-label="Table Columns"
+                aria-label="Colunas"
                 closeOnSelect={false}
                 selectedKeys={visibleColumns}
                 selectionMode="multiple"
@@ -223,7 +262,7 @@ export default function ReportTable() {
         </div>
       </div>
     )
-  }, [visibleColumns, onRowsPerPageChange, data?.length])
+  }, [filterValue, visibleColumns, rowsPerPage])
 
   const bottomContent = useMemo(() => {
     return (
@@ -257,7 +296,7 @@ export default function ReportTable() {
         </div>
       </div>
     )
-  }, [data?.length, page, pages])
+  }, [data?.length, page, pages, filterValue])
 
   return (
     <Table
