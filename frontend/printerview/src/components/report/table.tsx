@@ -20,10 +20,16 @@ import {
   TableRow,
   getKeyValue,
 } from '@nextui-org/react'
-import { ChevronDownIcon, DownloadIcon, SearchIcon } from 'lucide-react'
+import {
+  ChevronDownIcon,
+  DownloadIcon,
+  PrinterIcon,
+  SearchIcon,
+} from 'lucide-react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { ReportColumns } from './columns'
-import { capitalize, convertMonth } from './utils'
+import { capitalize, convertData, convertMonth } from './utils'
+import { INITIAL_VISIBLE_COLUMNS, PREVIOUSMONTH } from './filters'
 
 export type ReportData = {
   Client: string
@@ -31,38 +37,33 @@ export type ReportData = {
   Date: string
   Document_Name: string
   Pages: number
+  Printer: string
   Total: number
   User: string
 }
-const PREVIOUSMONTH = new Date().toISOString().split('T')[0] // Obtém a data atual no formato 'YYYY-MM-DD'
-const INITIAL_VISIBLE_COLUMNS = [
-  'Client',
-  'Date',
-  'User',
-  'Printer',
-  'Document Name',
-  'Total',
-]
 
 export default function ReportTable() {
+  // Estados
   const [ano, setAno] = useState<number>(2023)
   const [mes, setMes] = useState<string>('dezembro')
+  // Estado de visibilidade das colunas
+  const [visibleColumns, setVisibleColumns] = useState<Selection>(
+    new Set(INITIAL_VISIBLE_COLUMNS),
+  )
+  // Estado para ordenação da lista
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: 'Date',
+    direction: 'descending',
+  })
 
   // Data Fetching
   const { data, isLoading, error } = FetchData<ReportData[]>(
     `/getDataframe?ano=${ano}&mes=${mes}`,
   )
 
-  // Estado de visibilidade das colunas
-  const [visibleColumns, setVisibleColumns] = useState<Selection>(
-    new Set(INITIAL_VISIBLE_COLUMNS),
-  )
-
-  // Estado para ordenação da lista
-  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: 'Date',
-    direction: 'descending',
-  })
+  const reportData = useMemo(() => {
+    return convertData(data ?? [])
+  }, [data])
 
   // Processamento de visibilidade das colunas
   const headerColumns = useMemo(() => {
@@ -73,16 +74,9 @@ export default function ReportTable() {
     )
   }, [visibleColumns])
 
-  // Converte a data do json para uma data légivel
-  data?.forEach((object) => {
-    if (object.Date) {
-      const newData = new Date(object.Date)
-      object.Date = newData.toDateString()
-    }
-  })
-
   // Filtro de usuário
   const [filterValue, setFilterValue] = React.useState('')
+  const [printerValue, setPrinterValue] = useState('')
   const hasSearchFilter = Boolean(filterValue)
 
   const filteredItems = useMemo(() => {
@@ -93,8 +87,15 @@ export default function ReportTable() {
         object.User.toLowerCase().includes(filterValue.toLowerCase()),
       )
     }
+    if (printerValue) {
+      filteredData = filteredData.filter((object) =>
+        object.Printer.toLocaleLowerCase().includes(
+          printerValue.toLocaleLowerCase(),
+        ),
+      )
+    }
     return filteredData
-  }, [data, filterValue])
+  }, [reportData, filterValue, printerValue])
 
   // Total de impressões
   const TotalImpressoes = useMemo(() => {
@@ -103,7 +104,7 @@ export default function ReportTable() {
       total += object.Total
     })
     return total
-  }, [data, filterValue])
+  }, [reportData, filterValue, printerValue])
 
   // Paginação
   const [rowsPerPage, setRowsPerPage] = useState(15)
@@ -130,39 +131,6 @@ export default function ReportTable() {
       return sortDescriptor.direction === 'descending' ? -cmp : cmp
     })
   }, [sortDescriptor, items])
-
-  const downloadExcel = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `/getDataframe/download?ano=${ano}&mes=${mes}`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `${process.env.API_SECRET}`,
-          },
-        },
-      )
-      if (response.ok) {
-        // Obter o conteúdo do arquivo
-        const blob = await response.blob()
-
-        // Criar um URL temporário para o arquivo
-        const url = window.URL.createObjectURL(blob)
-
-        // Criar um link e simular o clique para iniciar o download
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `relatorio_impressao_${mes}_${ano}.xlsx`
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-      } else {
-        console.error(`Erro ao baixar o arquivo: ${response.statusText}`)
-      }
-    } catch (error) {
-      console.error(`Erro ao baixar o arquivo: ${error}`)
-    }
-  }, [ano, mes])
 
   // Funções de paginação
   const onNextPage = useCallback(() => {
@@ -194,8 +162,22 @@ export default function ReportTable() {
     }
   }, [])
 
-  const onClear = useCallback(() => {
+  const onPrinterChange = useCallback((value?: string) => {
+    if (value) {
+      setPrinterValue(value)
+      setPage(1)
+    } else {
+      setPrinterValue('')
+    }
+  }, [])
+
+  const onClearUser = useCallback(() => {
     setFilterValue('')
+    setPage(1)
+  }, [])
+
+  const onClearPrinter = useCallback(() => {
+    setPrinterValue('')
     setPage(1)
   }, [])
 
@@ -223,8 +205,17 @@ export default function ReportTable() {
               placeholder="Usuário..."
               value={filterValue}
               onValueChange={onSearchChange}
-              onClear={onClear}
+              onClear={onClearUser}
               startContent={<SearchIcon />}
+            />
+            <Input
+              isClearable
+              className="w-full sm:max-w-[44%]"
+              placeholder="Impresora..."
+              value={printerValue}
+              onValueChange={onPrinterChange}
+              onClear={onClearPrinter}
+              startContent={<PrinterIcon />}
             />
             <Input
               type="date"
@@ -264,7 +255,7 @@ export default function ReportTable() {
             </Dropdown>
             <Button
               color="primary"
-              onPress={downloadExcel}
+              // onPress={}
               endContent={<DownloadIcon></DownloadIcon>}
             >
               Download
@@ -272,9 +263,7 @@ export default function ReportTable() {
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">
-            Total de Impressões: {TotalImpressoes}
-          </span>
+          <div className="flex-1"></div>
           <label className="flex items-center text-default-400 text-small">
             Linhas por página:
             <select
@@ -291,7 +280,7 @@ export default function ReportTable() {
         </div>
       </div>
     )
-  }, [filterValue, visibleColumns, rowsPerPage])
+  }, [filterValue, printerValue, visibleColumns, rowsPerPage])
 
   const bottomContent = useMemo(() => {
     return (
@@ -305,6 +294,12 @@ export default function ReportTable() {
           total={pages}
           onChange={setPage}
         />
+        <div className="bg-zinc-900 pl-2 pr-2 rounded-3xl text-white/80 text-2xl font-semibold">
+          <span className="bg-gradient-to-r font-semibold from-sky-500 via-sky-700 to-sky-400 bg-clip-text text-transparent ">
+            Total de Impressões:
+          </span>{' '}
+          {TotalImpressoes}
+        </div>
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
           <Button
             isDisabled={pages === 1}
@@ -325,7 +320,7 @@ export default function ReportTable() {
         </div>
       </div>
     )
-  }, [data?.length, page, pages, filterValue])
+  }, [reportData?.length, page, pages, filterValue])
 
   return (
     <Table
