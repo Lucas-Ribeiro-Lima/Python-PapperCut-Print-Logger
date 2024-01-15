@@ -45,8 +45,8 @@ const INITIAL_VISIBLE_COLUMNS = [
 ]
 
 export default function ReportTable() {
-  const [ano, setAno] = useState<number>()
-  const [mes, setMes] = useState<string>()
+  const [ano, setAno] = useState<number>(2023)
+  const [mes, setMes] = useState<string>('dezembro')
 
   // Data Fetching
   const { data, isLoading, error } = FetchData<ReportData[]>(
@@ -132,8 +132,37 @@ export default function ReportTable() {
   }, [sortDescriptor, items])
 
   const downloadExcel = useCallback(async () => {
-    console.log('Ainda não implementado')
-  }, [])
+    try {
+      const response = await fetch(
+        `/getDataframe/download?ano=${ano}&mes=${mes}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `${process.env.API_SECRET}`,
+          },
+        },
+      )
+      if (response.ok) {
+        // Obter o conteúdo do arquivo
+        const blob = await response.blob()
+
+        // Criar um URL temporário para o arquivo
+        const url = window.URL.createObjectURL(blob)
+
+        // Criar um link e simular o clique para iniciar o download
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `relatorio_impressao_${mes}_${ano}.xlsx`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      } else {
+        console.error(`Erro ao baixar o arquivo: ${response.statusText}`)
+      }
+    } catch (error) {
+      console.error(`Erro ao baixar o arquivo: ${error}`)
+    }
+  }, [ano, mes])
 
   // Funções de paginação
   const onNextPage = useCallback(() => {
