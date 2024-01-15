@@ -1,3 +1,4 @@
+import { ApiClient } from '@/services/api'
 import { ReportData } from './table'
 
 export function capitalize(str: string) {
@@ -29,3 +30,28 @@ export const convertMonth = [
   'novembro',
   'dezembro',
 ]
+
+export async function downloadExcel(ano: number, mes: string) {
+  const api = ApiClient()
+  try {
+    const response = await api.get(
+      `/getDataframe/download?ano=2023&mes=dezembro`,
+      {
+        responseType: 'arraybuffer',
+      },
+    )
+
+    const blob = new Blob([response.data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    })
+
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `relatorio_impressao_dezembro_2023`
+    document.body.appendChild(link)
+    link.click()
+    document.body.appendChild(link)
+  } catch (error) {
+    console.error('Erro:', error)
+  }
+}

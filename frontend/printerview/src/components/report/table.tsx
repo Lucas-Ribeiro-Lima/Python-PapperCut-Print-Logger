@@ -28,7 +28,7 @@ import {
 } from 'lucide-react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { ReportColumns } from './columns'
-import { capitalize, convertData, convertMonth } from './utils'
+import { capitalize, convertData, convertMonth, downloadExcel } from './utils'
 import { INITIAL_VISIBLE_COLUMNS, PREVIOUSMONTH } from './filters'
 
 export type ReportData = {
@@ -256,7 +256,7 @@ export default function ReportTable() {
             </Dropdown>
             <Button
               color="primary"
-              // onPress={}
+              onPress={downloadExcel}
               endContent={<DownloadIcon></DownloadIcon>}
             >
               Download
@@ -326,7 +326,6 @@ export default function ReportTable() {
   return (
     <Table
       aria-label="Print report table"
-      // removeWrapper
       topContent={topContent}
       topContentPlacement="outside"
       classNames={{
