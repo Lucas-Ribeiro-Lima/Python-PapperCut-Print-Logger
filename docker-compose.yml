@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  printerview-app:
+    container_name: printerview-app
+    image: printerview-app:v1
+    build:
+      context: ./frontend/
+    ports:
+    - '8080:3000'
+    networks:
+    - network
+    volumes:
+      - ./frontend/printerview:/app
+    restart: unless-stopped
+    
+  printerview-worker:
+    container_name: printerview-worker
+    image: printerview-worker:v1
+    build:
+      context: ./backend/
+    restart: always
+    ports:
+    - '5000:5000'
+    networks:
+    - network
+    volumes:
+      - ./backend/data:/app/data
+      
+networks:
+  network:
+    driver: bridge
