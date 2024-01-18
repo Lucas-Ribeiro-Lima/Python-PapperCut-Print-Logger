@@ -21,6 +21,13 @@ services:
     restart: always
     ports:
     - '5000:5000'
+    environment:
+    - API_SECRET=API_SECRET
+    - DATA_SERVER=DATA_SERVER
+    - DATA_USER=DATA_USER
+    - DATA_PASSWD=DATA_PASSWD
+    - ADMIN_USER=ADMIN_USER
+    - ADMIN_PASSWD=ADMIN_PASSWD
     networks:
     - network
     volumes:
