@@ -22,7 +22,7 @@ services:
     ports:
     - '5000:5000'
     environment:
-    - API_SECRET=API_SECRET
+    - SECRET_KEY=SECRET_KEY
     - DATA_SERVER=DATA_SERVER
     - DATA_USER=DATA_USER
     - DATA_PASSWD=DATA_PASSWD

@@ -1,10 +1,12 @@
 import jwt
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 secret_key = os.environ.get('SECRET_KEY')
 
 def create_jwt(payload):
-  encoded = jwt.encode(payload, secret_key, algorithm='HS256')
+  encoded = jwt.encode(payload, secret_key, algorithm='HS256', )
   return encoded
 
 def decode_jwt(jwtPayload):

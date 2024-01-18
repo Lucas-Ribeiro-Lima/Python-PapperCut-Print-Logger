@@ -2,23 +2,13 @@
 
 ### Get Dataframe data
 GET http://localhost:5000/getDataframe?ano=2023&mes=dezembro
-Authorization: API_SECRET
-
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJMdWNhcy1SaWJlaXJvLUxpbWEiLCJleHAiOjE3MDU1OTM2NTksImF2YXRhcl91cmwiOiJodHRwczovL2dpdGh1Yi5jb20vTHVjYXMtUmliZWlyby1MaW1hLnBuZyJ9.7HTXrBzDP5nHWrtFR3-KD4zsyC4S-dpxycileGcrLGc
 
 ### Download excel dataframe data
 GET http://localhost:5000/getDataframe/download?ano=2023&mes=dezembro
-Authorization: API_SECRET
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJMdWNhcy1SaWJlaXJvLUxpbWEiLCJleHAiOjE3MDU1OTM2NTksImF2YXRhcl91cmwiOiJodHRwczovL2dpdGh1Yi5jb20vTHVjYXMtUmliZWlyby1MaW1hLnBuZyJ9.7HTXrBzDP5nHWrtFR3-KD4zsyC4S-dpxycileGcrLGc
 
 ### Login JWT create
-POST http://localhost:5000/login
-Content-Type: application/json
-
-{
-  "userID": "teste",
-  "name": "name_test",
-  "avatar_url": "avatar_test"
-}
-
-### Test JWT decode
-GET http://localhost:5000/authenticate
-Authorization: JWT
+GET http://localhost:5000/login
+?username=Lucas-Ribeiro-Lima
+&password=12345
