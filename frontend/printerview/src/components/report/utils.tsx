@@ -1,4 +1,4 @@
-import { ApiClient } from '@/services/api'
+import { ApiClient } from '@/lib/api'
 import { ReportData } from './table'
 
 export function capitalize(str: string) {
@@ -35,7 +35,7 @@ export async function downloadExcel(ano: number, mes: string) {
   const api = ApiClient()
   try {
     const response = await api.get(
-      `/getDataframe/download?ano=2023&mes=dezembro`,
+      `/getDataframe/download?ano=${ano}&mes=${mes}`,
       {
         responseType: 'arraybuffer',
       },
@@ -47,7 +47,7 @@ export async function downloadExcel(ano: number, mes: string) {
 
     const link = document.createElement('a')
     link.href = URL.createObjectURL(blob)
-    link.download = `relatorio_impressao_dezembro_2023`
+    link.download = `relatorio_impressao_${mes}_${ano}`
     document.body.appendChild(link)
     link.click()
     document.body.appendChild(link)

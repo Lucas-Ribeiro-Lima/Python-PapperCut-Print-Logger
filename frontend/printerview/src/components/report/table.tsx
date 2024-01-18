@@ -28,8 +28,8 @@ import {
 } from 'lucide-react'
 import React, { useCallback, useMemo, useState } from 'react'
 import { ReportColumns } from './columns'
-import { capitalize, convertData, convertMonth, downloadExcel } from './utils'
 import { INITIAL_VISIBLE_COLUMNS, PREVIOUSMONTH } from './filters'
+import { capitalize, convertData, convertMonth, downloadExcel } from './utils'
 
 export type ReportData = {
   Client: string
@@ -44,8 +44,8 @@ export type ReportData = {
 
 export default function ReportTable() {
   // Estados
-  const [ano, setAno] = useState<number>(2023)
-  const [mes, setMes] = useState<string>('dezembro')
+  const [ano, setAno] = useState<number>(NaN)
+  const [mes, setMes] = useState<string>('')
   // Estado de visibilidade das colunas
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
     new Set(INITIAL_VISIBLE_COLUMNS),
@@ -58,7 +58,7 @@ export default function ReportTable() {
   })
 
   // Data Fetching
-  const { data, isLoading, error } = FetchData<ReportData[]>(
+  const { data, isLoading } = FetchData<ReportData[]>(
     `/getDataframe?ano=${ano}&mes=${mes}`,
   )
 
@@ -256,7 +256,7 @@ export default function ReportTable() {
             </Dropdown>
             <Button
               color="primary"
-              onPress={downloadExcel}
+              onPress={downloadExcel(ano, mes)}
               className="hidden sm:flex"
               endContent={<DownloadIcon></DownloadIcon>}
             >

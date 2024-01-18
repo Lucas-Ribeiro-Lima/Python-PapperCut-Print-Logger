@@ -1,4 +1,4 @@
-import { ApiClient } from '@/services/api'
+import { ApiClient } from '@/lib/api'
 import useSWR from 'swr'
 
 export function FetchData<T>(url: string) {
