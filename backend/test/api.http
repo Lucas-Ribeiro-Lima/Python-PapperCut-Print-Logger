@@ -1,10 +1,24 @@
 ### Testes
 
 ### Get Dataframe data
-http://localhost:5000/getDataframe?ano=2023&mes=dezembro
+GET http://localhost:5000/getDataframe?ano=2023&mes=dezembro
 Authorization: API_SECRET
 
 
 ### Download excel dataframe data
-http://localhost:5000/getDataframe/download?ano=2023&mes=dezembro
+GET http://localhost:5000/getDataframe/download?ano=2023&mes=dezembro
 Authorization: API_SECRET
+
+### Login JWT create
+POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+  "userID": "teste",
+  "name": "name_test",
+  "avatar_url": "avatar_test"
+}
+
+### Test JWT decode
+GET http://localhost:5000/authenticate
+Authorization: JWT
