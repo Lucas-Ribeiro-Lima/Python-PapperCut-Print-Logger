@@ -1,7 +1,6 @@
-import json
 import os
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_cors import CORS
 from functions import extractCSV, excel
 
@@ -13,7 +12,7 @@ secret = os.environ.get('API_SECRET')
 
 
 @app.route("/")
-def hello_world():
+def printer_view():
   return "<h1>Printer View</h1>"
 
 
@@ -22,8 +21,6 @@ def get_dataframe():
   try:
 
     authorization = request.headers.get('Authorization')
-
-    # print(authorization)
 
     if (authorization == secret):
     #Argumentos de paramêtro

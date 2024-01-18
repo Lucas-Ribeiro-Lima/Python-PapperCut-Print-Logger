@@ -4,7 +4,8 @@ import pandas as pd
 def to_dataframe(ano, mes):
   try:
     #Variaveis
-    folder_path=f'/app/data/{ano}/{mes}'
+    folder_path=f'./backend/data/{ano}/{mes}'
+    print(folder_path)
     file_list = os.listdir(folder_path)
 
     tables = []
