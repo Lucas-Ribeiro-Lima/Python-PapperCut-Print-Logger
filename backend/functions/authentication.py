@@ -15,8 +15,8 @@ def handleLogin(username, passwd):
       "exp": dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(minutes=60),
       "avatar_url": f'https://github.com/{ADMIN_USER}.png'
     } 
-    jwtResponse = handleJwt.create_jwt(payload)
-    return jwtResponse
+    jwt = handleJwt.create_jwt(payload)
+    return jwt
   else:
     return({"message": "invalid credentials"})
   

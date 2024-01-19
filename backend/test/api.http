@@ -14,5 +14,5 @@ GET http://localhost:5000/login
 &password=12345
 
 ### Test JWT
-GET http://localhost:5000/testJWT
+GET http://localhost:5000/getUser
 Authorization: JWT
