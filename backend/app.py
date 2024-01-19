@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from functions import extractCSV, excel, authentication
 
@@ -39,7 +39,11 @@ def handle_authentication():
   response = authentication.handleLogin(username, passwd)
   return response
 
-
+@app.route("/testJWT", methods=["GET"])
+def test_JWT():
+  authorization = request.headers.get("Authorization")
+  response = authentication.validateLogin(authorization)
+  return jsonify(response)
 
 if __name__ == "__main__":
     app.run(debug=True)

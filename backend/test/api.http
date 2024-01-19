@@ -2,13 +2,17 @@
 
 ### Get Dataframe data
 GET http://localhost:5000/getDataframe?ano=2023&mes=dezembro
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJMdWNhcy1SaWJlaXJvLUxpbWEiLCJleHAiOjE3MDU1OTM2NTksImF2YXRhcl91cmwiOiJodHRwczovL2dpdGh1Yi5jb20vTHVjYXMtUmliZWlyby1MaW1hLnBuZyJ9.7HTXrBzDP5nHWrtFR3-KD4zsyC4S-dpxycileGcrLGc
+Authorization: JWT
 
 ### Download excel dataframe data
 GET http://localhost:5000/getDataframe/download?ano=2023&mes=dezembro
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJMdWNhcy1SaWJlaXJvLUxpbWEiLCJleHAiOjE3MDU1OTM2NTksImF2YXRhcl91cmwiOiJodHRwczovL2dpdGh1Yi5jb20vTHVjYXMtUmliZWlyby1MaW1hLnBuZyJ9.7HTXrBzDP5nHWrtFR3-KD4zsyC4S-dpxycileGcrLGc
+Authorization: JWT
 
 ### Login JWT create
 GET http://localhost:5000/login
 ?username=Lucas-Ribeiro-Lima
 &password=12345
+
+### Test JWT
+GET http://localhost:5000/testJWT
+Authorization: JWT
