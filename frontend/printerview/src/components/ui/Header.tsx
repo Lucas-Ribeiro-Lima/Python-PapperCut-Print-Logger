@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Button,
   Dropdown,
@@ -42,7 +44,7 @@ export default function Header() {
       </NavbarContent>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
-          <Link href="#">Inicio</Link>
+          <Link href="/">Inicio</Link>
         </NavbarItem>
         <NavbarItem>
           <Link href="#">Dashboard</Link>
@@ -80,7 +82,7 @@ export default function Header() {
               description="Relátorios Analítico"
               className="text-white"
             >
-              Analítico
+              <Link href="/report/analytic">Analítico</Link>
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
@@ -93,7 +95,7 @@ export default function Header() {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <Button as={Link} color="primary" href="#" variant="flat">
+          <Button as={Link} color="primary" href="/login" variant="flat">
             Log In
           </Button>
         </NavbarItem>

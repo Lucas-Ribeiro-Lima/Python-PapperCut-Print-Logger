@@ -1,4 +1,4 @@
-import { ApiClient } from '@/lib/api'
+import { ApiClient } from '@/lib/ApiClient'
 import { ReportData } from './table'
 
 export function capitalize(str: string) {

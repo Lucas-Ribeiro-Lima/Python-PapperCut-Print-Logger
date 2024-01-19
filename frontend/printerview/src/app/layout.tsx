@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { ReactNode } from 'react'
 
 import './globals.css'
+import { NextUIProvider } from '@nextui-org/react'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const inter = Inter({ subsets: ['latin'] })

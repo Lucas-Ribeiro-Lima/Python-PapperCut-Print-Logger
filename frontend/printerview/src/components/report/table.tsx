@@ -26,7 +26,9 @@ import {
   PrinterIcon,
   SearchIcon,
 } from 'lucide-react'
-import React, { useCallback, useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
+import { AuthContext } from '../context/authProvider'
 import { ReportColumns } from './columns'
 import { INITIAL_VISIBLE_COLUMNS, PREVIOUSMONTH } from './filters'
 import { capitalize, convertData, convertMonth, downloadExcel } from './utils'
@@ -43,6 +45,11 @@ export type ReportData = {
 }
 
 export default function ReportTable() {
+  const { user } = useContext(AuthContext)
+  const router = useRouter()
+
+  if (user == null) return router.push('/login')
+
   // Estados
   const [ano, setAno] = useState<number>(NaN)
   const [mes, setMes] = useState<string>('')
