@@ -1,11 +1,13 @@
 'use client'
 
 import {
+  Avatar,
   Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Link,
   Navbar,
   NavbarBrand,
   NavbarContent,
@@ -13,11 +15,13 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   NavbarMenuToggle,
-  Link,
 } from '@nextui-org/react'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, LogOut } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { destroyCookie, parseCookies } from 'nookies'
+import { useContext, useState } from 'react'
+import { AuthContext } from '../context/authProvider'
 import Logo from './Logo'
-import { useState } from 'react'
 
 const menuItems = [
   'Inicio',
@@ -29,7 +33,15 @@ const menuItems = [
 ]
 
 export default function Header() {
+  const { user } = useContext(AuthContext)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const router = useRouter()
+
+  async function handleLogout() {
+    const cookies = parseCookies()
+    destroyCookie(cookies, 'printerViewJwt')
+    router.refresh()
+  }
 
   return (
     <Navbar isBordered onMenuOpenChange={setIsMenuOpen}>
@@ -94,11 +106,42 @@ export default function Header() {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Button as={Link} color="primary" href="/login" variant="flat">
-            Log In
-          </Button>
-        </NavbarItem>
+        {(!user && (
+          <NavbarItem className="hidden lg:flex">
+            <Button as={Link} color="primary" href="/login" variant="flat">
+              Log In
+            </Button>
+          </NavbarItem>
+        )) || (
+          <Dropdown className="text-white" placement="bottom-end">
+            <DropdownTrigger>
+              <Avatar
+                isBordered
+                as="button"
+                className="transition-transform"
+                color="primary"
+                name={user[0].userID}
+                size="md"
+                src={user[0].avatar_url}
+              />
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Profile Actions" variant="flat">
+              <DropdownItem key="profile" className="h-14 gap-2">
+                <p className="font-bold">Conectado como</p>
+                <p className="font-bold">{user[0].userID}</p>
+              </DropdownItem>
+              <DropdownItem key="leave">
+                <Button
+                  onPress={handleLogout}
+                  startContent={<LogOut />}
+                  variant="light"
+                >
+                  Sair
+                </Button>
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        )}
       </NavbarContent>
       <NavbarMenu>
         {menuItems.map((item, index) => (

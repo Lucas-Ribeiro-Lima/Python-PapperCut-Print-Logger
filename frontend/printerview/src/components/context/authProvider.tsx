@@ -6,9 +6,9 @@ import { parseCookies, setCookie } from 'nookies'
 import { ReactNode, createContext, useEffect, useState } from 'react'
 
 export type UserType = {
-  userId: string
+  userID: string
   exp: number
-  avatarUrl: string
+  avatar_url: string
 }
 
 export type SignInType = {
