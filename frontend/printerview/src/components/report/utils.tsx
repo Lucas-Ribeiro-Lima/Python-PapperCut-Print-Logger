@@ -55,3 +55,7 @@ export async function downloadExcel(ano: number, mes: string) {
     console.error('Erro:', error)
   }
 }
+
+export const DEFAULTDATA = new Date().toISOString().split('T')[0]
+export const DEFAULTYEAR = new Date().getFullYear()
+export const DEFAULTMONTH = convertMonth[new Date().getMonth()]

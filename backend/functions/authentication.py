@@ -18,7 +18,7 @@ def handleLogin(username, passwd):
     jwt = handleJwt.create_jwt(payload)
     return jwt
   else:
-    return({"message": "invalid credentials"})
+    return({"message": "invalid credentials"}, 401)
   
 
 def validateLogin(jwt):

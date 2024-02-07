@@ -11,7 +11,6 @@ import {
   Pagination,
   Selection,
   SortDescriptor,
-  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -26,12 +25,25 @@ import {
   PrinterIcon,
   SearchIcon,
 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, {
+  Suspense,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
 import { AuthContext } from '../context/authProvider'
 import { ReportColumns } from './columns'
-import { INITIAL_VISIBLE_COLUMNS, PREVIOUSMONTH } from './filters'
-import { capitalize, convertData, convertMonth, downloadExcel } from './utils'
+import { INITIAL_VISIBLE_COLUMNS } from './filters'
+import {
+  DEFAULTDATA,
+  DEFAULTMONTH,
+  DEFAULTYEAR,
+  capitalize,
+  convertData,
+  convertMonth,
+  downloadExcel,
+} from './utils'
 
 export type ReportData = {
   Client: string
@@ -45,15 +57,12 @@ export type ReportData = {
 }
 
 export default function ReportTable() {
-  const { user } = useContext(AuthContext)
-  const router = useRouter()
-
-  if (user == null) return router.push('/login')
-
+  const { isAuthenticaded } = useContext(AuthContext)
   // Estados
-  const [ano, setAno] = useState<number>(NaN)
-  const [mes, setMes] = useState<string>('')
+  const [ano, setAno] = useState<number>(DEFAULTYEAR)
+  const [mes, setMes] = useState<string>(DEFAULTMONTH)
   // Estado de visibilidade das colunas
+
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
     new Set(INITIAL_VISIBLE_COLUMNS),
   )
@@ -65,7 +74,7 @@ export default function ReportTable() {
   })
 
   // Data Fetching
-  const { data, isLoading } = FetchData<ReportData[]>(
+  const { data } = FetchData<ReportData[]>(
     `/getDataframe?ano=${ano}&mes=${mes}`,
   )
 
@@ -201,6 +210,10 @@ export default function ReportTable() {
     setMes(mesString)
   }, [])
 
+  async function handleDownloadExcel() {
+    downloadExcel(ano, mes)
+  }
+
   // Componentes
   const topContent = useMemo(() => {
     return (
@@ -229,7 +242,7 @@ export default function ReportTable() {
               type="date"
               className="w-full sm:max-w-[44%]"
               placeholder="Data"
-              defaultValue={PREVIOUSMONTH}
+              defaultValue={DEFAULTDATA}
               onValueChange={onDateChange}
             />
           </div>
@@ -263,7 +276,7 @@ export default function ReportTable() {
             </Dropdown>
             <Button
               color="primary"
-              onPress={downloadExcel(ano, mes)}
+              onPress={handleDownloadExcel}
               className="hidden sm:flex"
               endContent={<DownloadIcon></DownloadIcon>}
             >
@@ -331,6 +344,8 @@ export default function ReportTable() {
     )
   }, [reportData?.length, page, pages, filterValue])
 
+  if (isAuthenticaded === false) return <Suspense></Suspense>
+
   return (
     <Table
       aria-label="Print report table"
@@ -351,12 +366,7 @@ export default function ReportTable() {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody
-        isLoading={isLoading}
-        loadingContent={<Spinner color="primary" label="Loading..."></Spinner>}
-        emptyContent={'Sem dados desse período'}
-        items={sortedItems}
-      >
+      <TableBody emptyContent={'Sem dados desse período'} items={sortedItems}>
         {(item) => (
           <TableRow key={data?.indexOf(item)}>
             {(columnKey) => (

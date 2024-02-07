@@ -15,4 +15,4 @@ GET http://localhost:5000/login
 
 ### Test JWT
 GET http://localhost:5000/getUser
-Authorization: JWT
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJMdWNhcy1SaWJlaXJvLUxpbWEiLCJleHAiOjE3MDczMTM4MzIsImF2YXRhcl91cmwiOiJodHRwczovL2dpdGh1Yi5jb20vTHVjYXMtUmliZWlyby1MaW1hLnBuZyJ9.fuH6QIU2pa2H4rexTOGSko_cHa-KQ57VZrcay4K1TDM

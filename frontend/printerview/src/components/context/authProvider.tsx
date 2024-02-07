@@ -1,6 +1,7 @@
 'use client'
 
 import { api } from '@/lib/api'
+import { useRouter } from 'next/navigation'
 import { parseCookies, setCookie } from 'nookies'
 import { ReactNode, createContext, useEffect, useState } from 'react'
 
@@ -17,6 +18,7 @@ export type SignInType = {
 
 export type AuthContextType = {
   user: UserType
+  isAuthenticaded: boolean
   signIn: ({ username, password }: SignInType) => Promise<void>
 }
 
@@ -24,15 +26,25 @@ export const AuthContext = createContext({} as AuthContextType)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserType | null>(null)
+  const [isAuthenticaded, setIsAuthenticated] = useState<boolean>(false)
+  const router = useRouter()
 
   useEffect(() => {
     async function validateUser() {
-      // eslint-disable-next-line prettier/prettier
-      const { 'printerViewJwt': jwt } = parseCookies()
-      if (jwt) {
-        api.defaults.headers.common.Authorization = jwt
-        const { data } = await api.get<UserType>('/getUser')
-        setUser(data)
+      try {
+        // eslint-disable-next-line prettier/prettier
+        const { 'printerViewJwt': jwt } = parseCookies()
+        if (jwt) {
+          api.defaults.headers.common.Authorization = jwt
+          const { data } = await api.get<UserType>('/getUser')
+          setUser(data)
+          setIsAuthenticated(true)
+        } else {
+          router.push('/login')
+        }
+      } catch (error) {
+        router.push('/login')
+        console.log(error)
       }
     }
     validateUser()
@@ -44,7 +56,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         `/login?username=${username}&password=${password}`,
       )
 
+      setIsAuthenticated(true)
+
       setCookie(undefined, 'printerViewJwt', token, {
+        path: '/',
         maxAge: 60 * 60 * 1, // 1 hour
       })
 
@@ -58,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, signIn }}>
+    <AuthContext.Provider value={{ user, isAuthenticaded, signIn }}>
       {children}
     </AuthContext.Provider>
   )

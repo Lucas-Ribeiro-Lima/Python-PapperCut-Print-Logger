@@ -27,12 +27,12 @@ export const ReportColumns = [
     label: 'Impressora',
     sortable: true,
   },
-  {
-    key: 'Document_Name',
-    uid: 'Document Name',
-    label: 'Nome arquivo',
-    sortable: true,
-  },
+  // {
+  //   key: 'Document_Name',
+  //   uid: 'Document Name',
+  //   label: 'Nome arquivo',
+  //   sortable: true,
+  // },
   {
     key: 'Total',
     uid: 'Total',

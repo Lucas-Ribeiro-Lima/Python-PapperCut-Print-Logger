@@ -24,13 +24,13 @@ function LoginForm() {
     resolver: zodResolver(LoginSchema),
   })
 
-  const { signIn } = useContext(AuthContext)
   const router = useRouter()
+  const { signIn } = useContext(AuthContext)
 
   async function handleSignIn({ username, password }: SignInType) {
     try {
       await signIn({ username, password })
-      router.push('/')
+      router.back()
     } catch (error) {
       console.error(error)
     }

@@ -51,8 +51,11 @@ def handle_authentication():
 @app.route("/getUser", methods=["GET"])
 def getUser():
   authorization = request.headers.get("Authorization")
-  response = authentication.validateLogin(authorization)
-  return jsonify(response)
+  if(authorization == None):
+      return 401
+  else:
+    response = authentication.validateLogin(authorization)
+    return jsonify(response)
 
 if __name__ == "__main__":
     app.run(debug=True)
