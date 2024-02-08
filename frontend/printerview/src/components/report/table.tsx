@@ -232,7 +232,7 @@ export default function ReportTable() {
             <Input
               isClearable
               className="w-full sm:max-w-[44%]"
-              placeholder="Impresora..."
+              placeholder="Impressora..."
               value={printerValue}
               onValueChange={onPrinterChange}
               onClear={onClearPrinter}
