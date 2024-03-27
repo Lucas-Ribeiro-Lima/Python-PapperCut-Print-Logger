@@ -1,9 +1,10 @@
 import axios from 'axios'
 import { parseCookies } from 'nookies'
+import { env } from './env'
 
-export function ApiClient() {
+export async function ApiClient() {
   const api = axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: `http://172.22.0.17:8887`,
   })
 
   const { printerViewJwt: jwt } = parseCookies()

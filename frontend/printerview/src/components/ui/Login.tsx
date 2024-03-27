@@ -64,18 +64,37 @@ function LoginForm() {
           </span>
         )}
       </div>
-      <Button
-        className="w-1/3 self-center"
-        size="md"
-        color="primary"
-        radius="full"
-        variant="shadow"
-        startContent={<LogInIcon></LogInIcon>}
-        onPress={handleSubmit(handleSignIn)}
-      >
-        LogIn
-      </Button>
+      <div className="flex items-center justify-center gap-4">
+        <Button
+          className="w-1/3 self-center"
+          size="md"
+          color="primary"
+          radius="full"
+          variant="shadow"
+          startContent={<LogInIcon></LogInIcon>}
+          onPress={handleSubmit(handleSignIn)}
+        >
+          Log-In
+        </Button>
+        <GithubLogin></GithubLogin>
+      </div>
     </form>
+  )
+}
+
+function GithubLogin() {
+  return (
+    <Button
+      className="w-1/3 self-center"
+      size="md"
+      color="default"
+      radius="full"
+      variant="shadow"
+      // onPress={signInOauth('github')}
+    >
+      Sign-In with
+      <div className="font-bold">GITHUB</div>
+    </Button>
   )
 }
 

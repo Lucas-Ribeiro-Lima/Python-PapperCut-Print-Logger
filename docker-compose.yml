@@ -9,6 +9,9 @@ services:
     - '8080:3000'
     networks:
     - network
+    environment:
+    - API_HOST=priterview-work
+    - API_PORT=5000
     volumes:
       - ./frontend/printerview:/app
     restart: unless-stopped
@@ -19,8 +22,8 @@ services:
     build:
       context: ./backend/
     restart: always
-    ports:
-    - '5000:5000'
+    # ports:
+    # - '5000:5000'
     environment:
     - SECRET_KEY=SECRET_KEY
     - DATA_SERVER=DATA_SERVER
