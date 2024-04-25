@@ -32,8 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function validateUser() {
       try {
-        // eslint-disable-next-line prettier/prettier
-        const { 'printerViewJwt': jwt } = parseCookies()
+        const { printerViewJwt: jwt } = parseCookies()
         if (jwt) {
           api.defaults.headers.common.Authorization = jwt
           const { data } = await api.get<UserType>('/getUser')

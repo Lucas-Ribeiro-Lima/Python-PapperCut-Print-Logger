@@ -31,7 +31,7 @@ export const convertMonth = [
   'dezembro',
 ]
 
-export async function downloadExcel(ano: number, mes: string) {
+export async function downloadExcel(ano: string, mes: string) {
   const api = ApiClient()
   try {
     const response = await api.get(

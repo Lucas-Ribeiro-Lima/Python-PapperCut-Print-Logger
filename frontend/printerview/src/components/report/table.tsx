@@ -22,17 +22,12 @@ import {
 import {
   ChevronDownIcon,
   DownloadIcon,
+  Loader2,
   PrinterIcon,
   SearchIcon,
 } from 'lucide-react'
-import React, {
-  Suspense,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react'
-import { AuthContext } from '../context/authProvider'
+import { useRouter, useSearchParams } from 'next/navigation'
+import React, { useCallback, useMemo, useState } from 'react'
 import { ReportColumns } from './columns'
 import { INITIAL_VISIBLE_COLUMNS } from './filters'
 import {
@@ -57,10 +52,10 @@ export type ReportData = {
 }
 
 export default function ReportTable() {
-  const { isAuthenticaded } = useContext(AuthContext)
-  // Estados
-  const [ano, setAno] = useState<number>(DEFAULTYEAR)
-  const [mes, setMes] = useState<string>(DEFAULTMONTH)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const ano = searchParams.get('ano') || DEFAULTYEAR.toString()
+  const mes = searchParams.get('mes') || DEFAULTMONTH
   // Estado de visibilidade das colunas
 
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
@@ -94,6 +89,7 @@ export default function ReportTable() {
   // Filtro de usuário
   const [filterValue, setFilterValue] = React.useState('')
   const [printerValue, setPrinterValue] = useState('')
+  const [downloading, setDownloading] = useState(false)
   const hasSearchFilter = Boolean(filterValue)
 
   const filteredItems = useMemo(() => {
@@ -201,17 +197,25 @@ export default function ReportTable() {
   const onDateChange = useCallback((str: string) => {
     const data = new Date(str)
 
-    const ano = data.getFullYear()
+    const ano = data.getFullYear().toString()
     const mesIndex = data.getMonth()
-
     const mesString = convertMonth[mesIndex]
 
-    setAno(ano)
-    setMes(mesString)
+    router.push(
+      `?${new URLSearchParams({
+        ano,
+        mes: mesString,
+      })}`,
+    )
   }, [])
 
   async function handleDownloadExcel() {
-    downloadExcel(ano, mes)
+    setDownloading(true)
+    const anoParams = searchParams.get('ano')
+    const mesParams = searchParams.get('mes')
+    downloadExcel(anoParams, mesParams).finally(() => {
+      setDownloading(false)
+    })
   }
 
   // Componentes
@@ -278,9 +282,14 @@ export default function ReportTable() {
               color="primary"
               onPress={handleDownloadExcel}
               className="hidden sm:flex"
-              endContent={<DownloadIcon></DownloadIcon>}
+              endContent={!downloading ? <DownloadIcon></DownloadIcon> : null}
+              disabled={downloading}
             >
-              Download
+              {!downloading ? (
+                'Download'
+              ) : (
+                <Loader2 className="animate-spin">Downloading...</Loader2>
+              )}
             </Button>
           </div>
         </div>
@@ -343,8 +352,6 @@ export default function ReportTable() {
       </div>
     )
   }, [reportData?.length, page, pages, filterValue])
-
-  if (isAuthenticaded === false) return <Suspense></Suspense>
 
   return (
     <Table
