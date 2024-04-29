@@ -3,7 +3,7 @@ import pandas as pd
 
 def to_dataframe(ano, mes):
   #Variaveis
-  folder_path=f'./backend/data/{ano}/{mes}'
+  folder_path=f'C:/Users/Lucas/Documents/PrinterView/backend/data/{ano}/{mes}'
   file_list = os.listdir(folder_path)
 
   tables = []
