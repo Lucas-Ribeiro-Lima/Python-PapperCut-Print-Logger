@@ -11,7 +11,7 @@ Authorization: JWT
 ### Login JWT create
 GET http://localhost:5000/login
 ?username=Lucas-Ribeiro-Lima
-&password=12345
+&password=123456
 
 ### Test JWT
 GET http://localhost:5000/getUser

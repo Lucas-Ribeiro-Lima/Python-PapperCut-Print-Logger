@@ -3,7 +3,7 @@ import { parseCookies } from 'nookies'
 
 export function ApiClient() {
   const api = axios.create({
-    baseURL: `http://172.22.0.17:8887`,
+    baseURL: `http://localhost:5000`,
   })
 
   const { printerViewJwt: jwt } = parseCookies()
